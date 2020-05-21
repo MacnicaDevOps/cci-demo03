@@ -14,12 +14,13 @@ jobs:
       - run:
           name: Configure JFrog CLI 
           command: |
-            /jfrog rt config --insecure-tls --user=$user --password=$password --url="http://"$jfqdn"/artifactory" $jid
+            /jfrog rt config --insecure-tls --user=$user --password=$password --url="https://"$jfqdn"/artifactory" $jid
       - run:
           name: JFrogCLI Artifact publish, scan and promote
           command: |
+            /jfrog rt docker-push $imagename"/"$CIRCLE_PROJECT_REPONAME":"$CIRCLE_BUILD_NUM $dev-repo --build-name=$CIRCLE_PROJECT_REPONAME --build-number=$CIRCLE_BUILD_NUM
             /jfrog rt bce $CIRCLE_PROJECT_REPONAME $CIRCLE_BUILD_NUM
             /jfrog rt bag $CIRCLE_PROJECT_REPONAME $CIRCLE_BUILD_NUM
             /jfrog rt bp $CIRCLE_PROJECT_REPONAME $CIRCLE_BUILD_NUM
             /jfrog rt bs $CIRCLE_PROJECT_REPONAME $CIRCLE_BUILD_NUM
-            /jfrog rt bpr $CIRCLE_PROJECT_REPONAME $CIRCLE_BUILD_NUM docker-local
+            /jfrog rt bpr $CIRCLE_PROJECT_REPONAME $CIRCLE_BUILD_NUM $prod-repo
